@@ -1,0 +1,49 @@
+#include<stdio.h>
+
+int w[10], p[10], n;
+
+// Function to return maximum of two numbers
+int max(int a, int b)
+{
+    return (a > b) ? a : b;
+}
+
+// Recursive Knapsack function to find the maximum profit
+int knap(int i, int m)
+{
+    // Base condition: if no items are left or index exceeds number of objects
+    if(i > n)
+        return 0;
+
+    // If the current item's weight exceeds the remaining capacity, skip it
+    if(w[i] > m)
+        return knap(i + 1, m);
+
+    // Return the maximum of two cases: 
+    // 1. Excluding the current item
+    // 2. Including the current item (and adding its profit)
+    return max(knap(i + 1, m), knap(i + 1, m - w[i]) + p[i]);
+}
+
+int main()
+{
+    int m, i, max_profit;
+
+    printf("Enter the number of objects: ");
+    scanf("%d", &n);
+
+    printf("Enter the knapsack capacity: ");
+    scanf("%d", &m);
+
+    printf("Enter profit and weight of each object:\n");
+    for(i = 1; i <= n; i++)
+    {
+        scanf("%d %d", &p[i], &w[i]);
+    }
+
+    // Call the recursive function starting from the first item
+    max_profit = knap(1, m);
+    printf("Maximum profit = %d\n", max_profit);
+
+    return 0;
+}
