@@ -1,0 +1,80 @@
+#include <stdio.h>
+
+#define MAX 50
+
+int p[MAX], w[MAX], x[MAX];
+double maxprofit;
+int n, m, i, j, temp2, currentWeight = 0;
+
+void greedyKnapsack(int n, int w[], int p[], int m) {
+    double ratio[MAX];
+
+    [span_13](start_span)// Step 1: Calculate the profit-to-weight ratio for each item[span_13](end_span)
+    for (i = 0; i < n; i++) {
+        ratio[i] = (double)p[i] / w[i];
+    }
+
+    [span_14](start_span)// Step 2: Sort items based on the ratio in non-increasing order[span_14](end_span)
+    for (i = 0; i < n - 1; i++) {
+        for (j = i + 1; j < n; j++) {
+            if (ratio[i] < ratio[j]) {
+                // Swap ratios
+                double temp = ratio[i];
+                ratio[i] = ratio[j];
+                [span_15](start_span)ratio[j] = temp;[span_15](end_span)
+
+                // Swap weights to match sorted ratios
+                temp2 = w[i];
+                w[i] = w[j];
+                [span_16](start_span)w[j] = temp2;[span_16](end_span)
+
+                // Swap profits to match sorted ratios
+                temp2 = p[i];
+                p[i] = p[j];
+                [span_17](start_span)p[j] = temp2;[span_17](end_span)
+            }
+        }
+    }
+
+    maxprofit = 0.0;
+
+    [span_18](start_span)// Step 3: Fill the knapsack with items based on the greedy choice[span_18](end_span)
+    for (i = 0; i < n; i++) {
+        if (currentWeight + w[i] <= m) {
+            x[i] = 1; [span_19](start_span)// Full item is selected[span_19](end_span)
+            currentWeight += w[i];
+            [span_20](start_span)maxprofit += p[i];[span_20](end_span)
+        } else {
+            [span_21](start_span)// Fractional part of item is selected for the remaining capacity[span_21](end_span)
+            x[i] = (m - currentWeight) / (double)w[i];
+            [span_22](start_span)maxprofit += x[i] * (double)p[i];[span_22](end_span)
+            break; // Knapsack is now full
+        }
+    }
+
+    printf("Optimal solution for greedy method: %.1f\n", maxprofit);
+    printf("Solution vector for greedy method: ");
+    for (i = 0; i < n; i++)
+        [span_23](start_span)printf("%d\t", x[i]);[span_23](end_span)
+}
+
+int main() {
+    printf("Enter the number of objects: ");
+    [span_24](start_span)scanf("%d", &n);[span_24](end_span)
+
+    printf("Enter the objects' weights: ");
+    for (i = 0; i < n; i++)
+        [span_25](start_span)scanf("%d", &w[i]);[span_25](end_span)
+
+    printf("Enter the objects' profits: ");
+    for (i = 0; i < n; i++)
+        [span_26](start_span)scanf("%d", &p[i]);[span_26](end_span)
+
+    printf("Enter the maximum capacity: ");
+    [span_27](start_span)scanf("%d", &m);[span_27](end_span)
+
+    [span_28](start_span)// Execute the greedy algorithm[span_28](end_span)
+    greedyKnapsack(n, w, p, m);
+
+    return 0;
+}
